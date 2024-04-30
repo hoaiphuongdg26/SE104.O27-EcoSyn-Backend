@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use app\Http\Controllers\IOT_DeviceController;
+use App\Http\Controllers\IOT_DeviceController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -20,4 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::post('/iot_devices', [IOT_DeviceController::class, 'store']);
 Route::get('/iot_devices', [IOT_DeviceController::class, 'index']);
 Route::get('/iot_devices/{id}', [IOT_DeviceController::class, 'detail']);
+
 
