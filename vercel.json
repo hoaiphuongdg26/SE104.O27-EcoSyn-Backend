@@ -12,7 +12,7 @@
         "APP_ENV": "production",
         "APP_DEBUG": "true",
         "APP_URL": "https://ecosync.com",
-        "APP_KEY": "7qjgqgdv8w0+vttTPWNvJGtK9RcKnzQEVq2gabE03Zo=",
+        "APP_KEY": "base64:7qjgqgdv8w0+vttTPWNvJGtK9RcKnzQEVq2gabE03Zo=",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
