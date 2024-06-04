@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('password', 150);
             $table->rememberToken();
             $table->timestamps();
+            $table->integer('deleted')->default(0);
         });
     }
 
