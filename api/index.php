@@ -9,7 +9,7 @@ $isApiRequest = stripos($_SERVER['REQUEST_URI'], '/api/') === 0;
 
 // Set the correct path for API requests
 if ($isApiRequest) {
-    $app->instance('path', base_path('routes/guest.php'));
+    $app->instance('path', base_path('routes/api.php'));
 }
 
 // Run the application
