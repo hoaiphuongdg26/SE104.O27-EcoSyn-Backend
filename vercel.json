@@ -16,7 +16,7 @@
 
         "DB_CONNECTION": "pgsql",
         "DB_HOST": "ep-spring-bonus-a5kpjrre.us-east-2.aws.neon.tech",
-        "DB_PORT": 5432,
+        "DB_PORT": "5432",
         "DB_DATABASE": "ecosync",
         "DB_USERNAME": "ecosync_owner",
         "DB_PASSWORD": "zPqtYSl7gx6J",
