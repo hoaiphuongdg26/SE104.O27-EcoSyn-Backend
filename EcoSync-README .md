@@ -17,10 +17,7 @@ http://ecosync:8000
    => php artisan migrate
    => php artisan migrate:fresh --seed
 
-5. Generate Personal access client
-   => php artisan passport:install --force
-
-6. Update composer
+5.Update composer
    => composer update
 
 ------------------------KIT------------------------

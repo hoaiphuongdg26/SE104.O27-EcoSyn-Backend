@@ -22,6 +22,6 @@ class RoleSeeder extends Seeder
         $adminRole->syncPermissions($permissions);
 
         //Permission for user
-        $userRole->givePermissionTo('view own user');
+//        $userRole->givePermissionTo('view own user');
     }
 }
