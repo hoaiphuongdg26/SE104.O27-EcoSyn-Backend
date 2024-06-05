@@ -33,5 +33,4 @@
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie"
     },
-    "installCommand": "php artisan migrate"
 }
