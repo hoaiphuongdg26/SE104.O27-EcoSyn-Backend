@@ -32,5 +32,8 @@
         "CACHE_DRIVER": "array",
         "LOG_CHANNEL": "stderr",
         "SESSION_DRIVER": "cookie"
+    },
+    "build": {
+        "commandTS": "php artisan migrate && npm run build"
     }
 }
