@@ -11,11 +11,12 @@ class MigrationController extends Controller
     public function runMigration(Request $request)
     {
         try {
-            Artisan::call('migrate');
+            Log::info('Starting migration...');
+            Artisan::call('migrate', ['--force' => true]);
+            Log::info('Migration output: ' . Artisan::output());
             return response()->json(['message' => 'Migration ran successfully']);
         } catch (\Exception $e) {
-            // Log lỗi để kiểm tra chi tiết
-            Log::error($e->getMessage());
+            Log::error('Migration error: ' . $e->getMessage());
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
