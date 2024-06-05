@@ -14,6 +14,14 @@
         "APP_URL": "https://ecosync.com",
         "APP_KEY": "base64:7qjgqgdv8w0+vttTPWNvJGtK9RcKnzQEVq2gabE03Zo=",
 
+        "DB_CONNECTION": "pgsql",
+        "DB_HOST": "ep-spring-bonus-a5kpjrre.us-east-2.aws.neon.tech",
+        "DB_PORT": 5432,
+        "DB_DATABASE": "ecosync",
+        "DB_USERNAME": "ecosync_owner",
+        "DB_PASSWORD": "zPqtYSl7gx6J",
+        "DB_SSLMODE": "require",
+
         "APP_CONFIG_CACHE": "/tmp/config.php",
         "APP_EVENTS_CACHE": "/tmp/events.php",
         "APP_PACKAGES_CACHE": "/tmp/packages.php",
