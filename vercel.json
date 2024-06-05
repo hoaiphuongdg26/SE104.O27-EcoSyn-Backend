@@ -19,7 +19,7 @@
         "DB_PORT": "5432",
         "DB_DATABASE": "ecosync",
         "DB_USERNAME": "ecosync_owner",
-        "DB_PASSWORD": "sFXE8VZjwqt1",
+        "DB_PASSWORD": "PAIcVHqUh0u3",
         "DB_SSLMODE": "require",
 
         "APP_CONFIG_CACHE": "/tmp/config.php",
