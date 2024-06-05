@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\IOT_DeviceController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +16,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
+
+Route::get('/iot_device', [IOT_DeviceController::class, 'store']);
+Route::get('/iot_devices', [IOT_DeviceController::class, 'index']);
+Route::get('/iot_devices/{id}', [IOT_DeviceController::class, 'detail']);
+
+
