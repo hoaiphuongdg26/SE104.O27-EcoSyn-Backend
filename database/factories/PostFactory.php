@@ -21,6 +21,7 @@ class PostFactory extends Factory
             'title' => $this->faker->sentence,
             'content' => $this->faker->paragraph,
             'image_url' => $this->faker->sentence,
+            'staff_id' => \App\Models\User::inRandomOrder()->first()->id,
         ];
     }
 }

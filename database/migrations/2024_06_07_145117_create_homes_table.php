@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('homes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('staff_id')->references('id')->on('users');
-            $table->string('title', 150);
-            $table->text('content');
-            $table->string('image_url',255)->nullable();
+            $table->foreignUuid('customer_id')->references('id')->on('users');
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('homes');
     }
 };

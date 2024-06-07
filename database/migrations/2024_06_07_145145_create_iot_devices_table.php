@@ -12,13 +12,15 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('iot_devices', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
+            $table->foreignUuid('home_id')->references('id')->on('homes');
             $table->string('ip');
             $table->double('air_val');
             $table->double('left_status');
             $table->double('right_status');
             $table->string('status');
             $table->timestamps();
+            $table->boolean('deleted')->default(0);
         });
     }
 

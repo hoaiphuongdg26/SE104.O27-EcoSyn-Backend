@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('staff_id')->references('id')->on('users');
-            $table->string('title', 150);
-            $table->text('content');
-            $table->string('image_url',255)->nullable();
+            $table->foreignUuid('start_home')->references('id')->on('homes');
+            $table->foreignUuid('end_home')->references('id')->on('homes');
+            $table->foreignUuid('status_id')->references('id')->on('statuses');
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('routes');
     }
 };

@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->foreignUuid('staff_id')->references('id')->on('users');
-            $table->string('title', 150);
-            $table->text('content');
-            $table->string('image_url',255)->nullable();
+        Schema::create('locations', function (Blueprint $table) {
+            $table->uuid('id')->primary()->foreign('id')->references('id')->on('addresses')->onDelete('cascade');
+            $table->decimal('latitude', 10, 7);
+            $table->decimal('longitude', 10, 7);
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('locations');
     }
 };

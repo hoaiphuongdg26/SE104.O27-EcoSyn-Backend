@@ -11,12 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('schedules', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->foreignUuid('staff_id')->references('id')->on('users');
-            $table->string('title', 150);
-            $table->text('content');
-            $table->string('image_url',255)->nullable();
+            $table->foreignUuid('route_id')->references('id')->on('routes');
+            $table->dateTime('start_time');
+            $table->dateTime('end_time');
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('schedules');
     }
 };
