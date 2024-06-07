@@ -24,7 +24,7 @@ class UserController extends Controller
         $users = User::where('deleted', 0)->latest()->get()->filter(function ($user) use ($current_user) {
             return $current_user->can('view', $user);
         });
-        return response()->json($users);
+        return response()->json(new UserResource($users));
     }
 
     /**
@@ -67,9 +67,8 @@ class UserController extends Controller
                 'password' => 'sometimes|string|max:150',
                 'role'     => 'sometimes|exists:roles,name'
             ]);
-            $newRoleName = $request->input('role');
-            $role = Role::where(['name' => $newRoleName])->first();
-            $user->assignRole($role);
+
+            $user->syncRoles([$request->input('role')]);
 
             $user->update($validatedData);
 
