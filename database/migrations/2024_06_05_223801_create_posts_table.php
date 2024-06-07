@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -12,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('posts', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            // $table->bigIncrements('id');
-            $table->string('email', 150)->unique();
-            $table->string('name', 150);
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password', 150);
-            $table->rememberToken();
+            $table->uuid('staff_id')->nullable();
+            $table->foreign('staff_id')->references('id')->on('users');
+            $table->string('title', 150);
+            $table->text('content');
+            $table->string('image_url',255)->nullable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('posts');
     }
 };
