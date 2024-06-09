@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\IOT_DeviceController;
+use App\Http\Controllers\ScheduleController;
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,4 +44,7 @@ Route::apiResource('users', UserController::class)->only(['index', 'show', 'upda
     ->middleware('auth:sanctum');
 
 Route::apiResource('homes', HomeController::class)->only(['index', 'store', 'show', 'update', 'destroy'])
+    ->middleware('auth:sanctum');
+
+Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'show', 'update', 'destroy'])
     ->middleware('auth:sanctum');
