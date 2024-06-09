@@ -17,6 +17,7 @@ class AuthServiceProvider extends ServiceProvider
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         \App\User::class => App\Policies\UserPolicy::class,
         \App\Post::class => App\Policies\PostPolicy::class,
+        \App\Home::class => App\Policies\HomePolicy::class,
     ];
 
     /**
@@ -31,7 +32,7 @@ class AuthServiceProvider extends ServiceProvider
         });
 
         Gate::before(function ($user){
-            if ($user->hasRole('admin')){
+            if ($user->hasRole('staff') || $user->hasRole('admin') || $user->hasRole('super admin')){
                 return true;
             }
         });

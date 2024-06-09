@@ -24,7 +24,7 @@ class PostController extends Controller
         $posts = Post::where('deleted', 0)->latest()->get()->filter(function ($post) use ($user) {
             return $user->can('view', $post);
         });
-        return response()->json($posts);
+        return response()->json(PostResource::collection($posts));
     }
 
     /**
@@ -37,15 +37,14 @@ class PostController extends Controller
         $validatedData = $request->validate([
             'title'     => 'sometimes|string|max:150',
             'content'   => 'sometimes|string',
-            'image_url' => 'sometimes|string|max:150'
+            'image_url' => 'sometimes|nullable|string|max:150'
         ]);
 
         $post = Post::create([
             'staff_id'  => $staff_id,
-            'title'     => $validatedData['title'],
-            'content'   => $validatedData['content'],
-            'image_url' => $validatedData['image_url'] ?? null,
-            'deleted'   => 0
+            'title'     => data_get($validatedData, 'title'),
+            'content'   => data_get($validatedData, 'content'),
+            'image_url' => data_get($validatedData, 'image_url'),
         ]);
 
         return new PostResource($post);
@@ -82,7 +81,7 @@ class PostController extends Controller
             $validatedData = $request->validate([
                 'title'     => 'sometimes|string|max:150',
                 'content'   => 'sometimes|string',
-                'image_url' => 'sometimes|string|max:150'
+                'image_url' => 'sometimes|nullable|string|max:150'
             ]);
 
             $post->update($validatedData);

@@ -14,14 +14,20 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $adminRole = Role::where('name', 'admin')->first() ?? Role::create(['name' => 'admin']);
-        $userRole = Role::where('name', 'user')->first() ?? Role::create(['name' => 'user']);
+        $roles = ['customer ', 'staff', 'admin', 'super admin'];
+        $this->createRoles($roles);
 
         //Full permission for admin
+        $adminRole = Role::where('name', 'admin')->first();
         $permissions = Permission::all();
         $adminRole->syncPermissions($permissions);
 
-        //Permission for user
-//        $userRole->givePermissionTo('view own user');
+    }
+    public function createRoles(array $roles): void
+    {
+        foreach ($roles as $roleName) {
+            // Tìm kiếm vai trò với tên đã cho, nếu không có thì tạo mới
+            $role = Role::where('name', $roleName)->first() ?? Role::create(['name' => $roleName]);
+        }
     }
 }

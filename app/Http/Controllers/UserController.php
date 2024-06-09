@@ -24,7 +24,7 @@ class UserController extends Controller
         $users = User::where('deleted', 0)->latest()->get()->filter(function ($user) use ($current_user) {
             return $current_user->can('view', $user);
         });
-        return response()->json(new UserResource($users));
+        return response()->json(UserResource::collection($users));
     }
 
     /**
@@ -62,9 +62,9 @@ class UserController extends Controller
                 return response()->json(['message' => 'You do not have permission this action.'], Response::HTTP_FORBIDDEN);
             }
             $validatedData = $request->validate([
-                'name'     => 'sometimes|string|max:150',
-                'email'   => 'sometimes|string|lowercase|email|max:150|unique:'.User::class,
-                'password' => 'sometimes|string|max:150',
+                'name'     => 'sometimes|nullable|string|max:150',
+                'email'   => 'sometimes|nullable|string|lowercase|email|max:150|unique:'.User::class,
+                'password' => 'sometimes|nullable|string|max:150',
                 'role'     => 'sometimes|exists:roles,name'
             ]);
 

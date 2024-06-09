@@ -10,7 +10,7 @@ trait UsesUuid
     {
         parent::boot();
         static::creating(function ($model) {
-            $model->id = Str::uuid();
+            $model->id = $model->id ?? Str::uuid();
         });
     }
 }

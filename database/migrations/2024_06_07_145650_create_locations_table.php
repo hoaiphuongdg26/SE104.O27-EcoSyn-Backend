@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->uuid('id')->primary()->foreign('id')->references('id')->on('addresses')->onDelete('cascade');
-            $table->decimal('latitude', 10, 7);
-            $table->decimal('longitude', 10, 7);
+            $table->decimal('latitude', 10, 7)->nullable();
+            $table->decimal('longitude', 10, 7)->nullable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });

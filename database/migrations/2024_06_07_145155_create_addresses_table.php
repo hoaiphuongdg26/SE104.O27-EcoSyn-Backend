@@ -15,12 +15,12 @@ return new class extends Migration
             $table->uuid('id')->primary()->foreign('id')->references('id')->on('homes')->onDelete('cascade');
             $table->string('unit_number')->nullable();
             $table->string('street_number')->nullable();
-            $table->string('address_line');
-            $table->string('ward');
-            $table->string('district');
-            $table->string('city');
+            $table->string('address_line')->nullable();
+            $table->string('ward')->nullable();
+            $table->string('district')->nullable();
+            $table->string('city')->nullable();
             $table->string('province')->nullable();
-            $table->string('country_name');
+            $table->string('country_name')->nullable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });

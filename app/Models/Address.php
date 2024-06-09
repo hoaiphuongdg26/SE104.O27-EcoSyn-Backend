@@ -12,7 +12,12 @@ class Address extends Model
     // Bỏ qua cài đặt tăng tự động cho khóa chính
     protected $keyType = 'string';
     public $incrementing = false;
+
+    protected $fillable = ['unit_number', 'street_number', 'address_line', 'ward', 'district', 'city', 'province', 'country_name'];
     public function home(){
-        return $this->hasOne(Home::class);
+        return $this->belongsTo(Home::class,'id','id');
+    }
+    public function location(){
+        return $this->hasOne(Location::class);
     }
 }

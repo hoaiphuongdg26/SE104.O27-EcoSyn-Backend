@@ -33,7 +33,7 @@ class RegisteredUserController extends Controller
                 'email'     => $request->email,
                 'password'  => Hash::make($request->password),
             ]);
-            $role = Role::firstOrCreate(['name' => 'user']);
+            $role = Role::where(['name' => 'customer']);
             $user->assignRole($role);
             $user->save();
             event(new Registered($user));

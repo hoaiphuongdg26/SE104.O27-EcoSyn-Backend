@@ -21,5 +21,13 @@ class UserSeeder extends Seeder
         ]);
         $adminRole = Role::where('name', 'admin')->first() ?? Role::create(['name' => 'admin']);
         $user->assignRole($adminRole);
+
+        $user2 = User::create([
+            'name'         => 'Customer',
+            'email'        => 'customer@gmail.com',
+            'password'     => bcrypt('customer@12345')
+        ]);
+        $customerRole = Role::where('name', 'customer')->first() ?? Role::create(['name' => 'customer']);
+        $user2->assignRole($customerRole);
     }
 }
