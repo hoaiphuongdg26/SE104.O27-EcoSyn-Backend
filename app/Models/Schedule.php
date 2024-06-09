@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Models\Staff;
+use App\Models\Route;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
