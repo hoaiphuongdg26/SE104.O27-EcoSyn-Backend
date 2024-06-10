@@ -3,31 +3,57 @@
 namespace App\Http\Controllers;
 
 use App\Models\IOT_Device;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\IOT_DeviceResource;
 
 class IOT_DeviceController extends Controller
 {
-    public function store(Request $request)
-    {
-        $validatedData = $request->validate([
-            //'ip' => 'required|ipv4',
-            'ip' => 'required|string',
-            'air_val' => 'required|numeric',
-            'left_status' => 'required|numeric',
-            'right_status' => 'required|numeric',
-            'status' => 'required|string',
-        ]);
-        $iotDevices = IOT_Device::create($validatedData);
-        return response()->json(['message' => 'Data stored successfully'], 201);
-    }
     public function index()
     {
-        $iotDevices = IOT_Device::all();
-        return response()->json($iotDevices);
+        // Lấy người dùng hiện tại
+        $user = Auth::user();
+
+        // Lấy danh sách các bài viết mà người dùng có quyền xem
+        $devices = IOT_Device::where('deleted', 0)->latest()->get()->filter(function ($device) use ($user) {
+            return $user->can('view', $device);
+        });
+        return response()->json(IOT_DeviceResource::collection($devices));
     }
-    public function detail($id)
+
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
     {
-        $iotDevice = IOT_Device::findOrFail($id);
-        return response()->json($iotDevice);
+        try {
+            $device = IOT_Device::where('deleted', 0)->findOrFail($id);
+            if (!auth()->user()->can('view', $device)) {
+                return response()->json(['message' => 'You do not have permission this action.'], Response::HTTP_FORBIDDEN);
+            }
+            return new IOT_Device($device);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($id)
+    {
+        try {
+            $device = IOT_Device::where('deleted', 0)->findOrFail($id);
+            if (!auth()->user()->can('delete', $device)) {
+                return response()->json(['message' => 'You do not have permission this action.'], Response::HTTP_FORBIDDEN);
+            }
+            $device->deleted = 1;
+            $device->save();
+            return response()->json(['message' => 'Post deleted'], Response::HTTP_ACCEPTED);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 }

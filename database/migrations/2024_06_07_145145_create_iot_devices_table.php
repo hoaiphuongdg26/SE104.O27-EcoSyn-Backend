@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('iot_devices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('home_id')->references('id')->on('homes');
+            $table->foreignUuid('home_id')->references('id')->on('homes')->nullalble();
             $table->string('ip');
             $table->double('air_val');
             $table->double('left_status');

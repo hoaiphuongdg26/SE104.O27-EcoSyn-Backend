@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('homes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('customer_id')->references('id')->on('users');
+            $table->foreignUuid('customer_id')->references('id')->on('users')->nulable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
