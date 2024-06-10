@@ -14,6 +14,11 @@ class ScheduleResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'route_id' => $this->route_id,
+            'start_time' => $this->start_time,
+            'end_time' => $this->end_time,
+        ];
     }
 }
