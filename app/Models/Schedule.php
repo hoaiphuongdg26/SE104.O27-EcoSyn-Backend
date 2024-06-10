@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
-use App\Models\Staff;
-use App\Models\Route;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use App\Models\Route;
+use App\Models\Staff;
 
 class Schedule extends Model
 {
@@ -21,14 +21,4 @@ class Schedule extends Model
         'start_time',
         'end_time',
     ];
-
-    public function staff()
-    {
-        return $this->belongsTo(Staff::class, 'staff_id');
-    }
-
-    public function route()
-    {
-        return $this->belongsTo(Route::class, 'route_id');
-    }
 }
