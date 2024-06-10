@@ -20,16 +20,12 @@ class RouteController extends Controller
         $this->authorize('create', Route::class);
 
         $validatedData = $request->validate([
-            'route_id' => 'required|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date',
+            'start_home' => 'required|exists:homes,id',
+            'end_home' => 'required|exists:homes,id',
+            'status_id' => 'required|exists:statuses,id',
         ]);
 
-        $route = Route::create([
-            'route_id' => data_get($validatedData, 'route_id'),
-            'start_time' => data_get($validatedData, 'start_time'),
-            'end_time' => data_get($validatedData, 'end_time'),
-        ]);
+        $route = Route::create($validatedData);
 
         return new RouteResource($route);
     }
@@ -46,13 +42,14 @@ class RouteController extends Controller
         $this->authorize('update', $route);
 
         $validatedData = $request->validate([
-            'route_id' => 'sometimes|string',
-            'start_time' => 'sometimes|date',
-            'end_time' => 'sometimes|date',
+            'start_home' => 'sometimes|exists:homes,id',
+            'end_home' => 'sometimes|exists:homes,id',
+            'status_id' => 'sometimes|exists:statuses,id',
         ]);
 
         $route->update($validatedData);
-        return response()->json(null, 204);
+
+        return new RouteResource($route);
     }
 
     public function destroy(string $id)
