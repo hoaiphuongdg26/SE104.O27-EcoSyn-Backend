@@ -3,88 +3,89 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
+use App\Http\Resources\V1\PostResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class ScheduleController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-    // Lấy danh sách tất cả các schedule
-        $schedules = Schedule::all();
-        return response()->json($schedules);
+        $user = Auth::user();
+        $schedules = Schedule::latest()->get()->filter(function ($schedule) use ($user) {
+        return $user->can('view', $schedule);
+    });
+
+    return response()->json($schedules);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //Tạo một schedule mới
-        $validatedData = $request->validate([
-            'staff_id' => 'required|exists:staff,staff_id',
-            'route_id' => 'required|exists:routes,id',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date',
+         $validatedData = $request->validate([
+            'route_id'    => 'required|exists:routes,id',
+            'start_time'  => 'required|date',
+            'end_time'    => 'required|date',
+        ]);
+        $staff_id = $request->user()->id;
+        $schedule = Schedule::create([
+            'staff_id'   => $staff_id,
+            'route_id'   => $validatedData['route_id'],
+            'start_time' => $validatedData['start_time'],
+            'end_time'   => $validatedData['end_time'],
         ]);
 
-        $schedule = Schedule::create($validatedData);
         return response()->json($schedule, 201);
     }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        //Lấy thông tin của một schedule cụ thể
-        $schedule = Schedule::findOrFail($id);
-        return response()->json($schedule);
+        try {
+            $schedule = Schedule::findOrFail($id);
+            if (!auth()->user()->can('view', $schedule)) {
+                return response()->json(['message' => 'You do not have permission for this action.'], Response::HTTP_FORBIDDEN);
+            }
+            return response()->json($schedule);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
+        }
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $validatedData = $request->validate([
-            'staff_id' => 'required|exists:staff,staff_id',
-            'route_id' => 'required|exists:routes,id',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date',
-        ]);
-
-        $schedule = Schedule::findOrFail($id);
-        $schedule->update($validatedData);
-        return response()->json($schedule);
+        try {
+            $schedule = Schedule::findOrFail($id);
+            if (!auth()->user()->can('update', $schedule)) {
+                return response()->json(['message' => 'You do not have permission for this action.'], Response::HTTP_FORBIDDEN);
+            }
+            $validatedData = $request->validate([
+                'route_id'    => 'sometimes|exists:routes,id',
+                'start_time'  => 'sometimes|date',
+                'end_time'    => 'sometimes|date',
+            ]);
+            $schedule->update($validatedData);
+            return response()->json($schedule);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //Xóa một schedule
-        $schedule = Schedule::findOrFail($id);
-        $schedule->delete();
-        return response()->json(null, 204);
+        try {
+            $schedule = Schedule::findOrFail($id);
+            if (!auth()->user()->can('delete', $schedule)) {
+                return response()->json(['message' => 'You do not have permission for this action.'], Response::HTTP_FORBIDDEN);
+            }
+            $schedule->deleted = 1;
+            $schedule->save();
+
+            return response()->json(['message' => 'Schedule deleted'], Response::HTTP_ACCEPTED);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
+        }
     }
 }
