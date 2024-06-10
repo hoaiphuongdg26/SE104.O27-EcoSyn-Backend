@@ -4,65 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Route;
 
 class RouteController extends Controller
 {
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create(Request $request)
+    public function index()
     {
+        $this->authorize('viewAny', Route::class);
+        $routes = Route::all();
+        return response()->json($routes);
+    }
+    public function store(Request $request)
+    {
+        $this->authorize('create', Route::class);
+
         $validatedData = $request->validate([
-            'route_id' => 'required|exists:routes,id',
+            'route_id' => 'required|string',
             'start_time' => 'required|date',
             'end_time' => 'required|date',
         ]);
-    
-        $routeId = DB::table('routes')->insertGetId([
+
+        $route = Route::create([
             'route_id' => $validatedData['route_id'],
             'start_time' => $validatedData['start_time'],
             'end_time' => $validatedData['end_time'],
-            'created_at' => now(),
-            'updated_at' => now(),
         ]);
-    
-        return response()->json(['route_id' => $routeId], 201);
+
+        return response()->json(['route_id' => $route->id], 201);
     }
 
     public function show(string $id)
     {
-        $route = DB::table('routes')
-            ->select('route_id', 'start_time', 'end_time', 'created_at', 'updated_at')
-            ->where('id', $id)
-            ->first();
-        if (!$route) {
-            return response()->json(['message' => 'Route not found'], 404);
-        }
+        $route = Route::findOrFail($id);
+        $this->authorize('view', $route);
         return response()->json($route);
     }
     public function update(Request $request, string $id)
     {
-         $validatedData = $request->validate([
-            'route_id' => 'exists:routes,id',
-            'start_time' => 'date',
-            'end_time' => 'date',
+        $route = Route::findOrFail($id);
+        $this->authorize('update', $route);
+
+        $validatedData = $request->validate([
+            'route_id' => 'sometimes|string',
+            'start_time' => 'sometimes|date',
+            'end_time' => 'sometimes|date',
         ]);
 
-        DB::table('routes')
-            ->where('id', $id)
-            ->update([
-                'route_id' => $validatedData['route_id'],
-                'start_time' => $validatedData['start_time'],
-                'end_time' => $validatedData['end_time'],
-                'updated_at' => now(),
-            ]);
-
+        $route->update($validatedData);
         return response()->json(null, 204);
     }
 
     public function destroy(string $id)
     {
-         DB::table('routes')->where('id', $id)->delete();
-         return response()->json(null, 204);
+        $route = Route::findOrFail($id);
+        $this->authorize('delete', $route);
+        $route->delete();
+        return response()->json(null, 204);
     }
 }
