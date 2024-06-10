@@ -31,14 +31,14 @@ class RouteController extends Controller
             'end_time' => data_get($validatedData, 'end_time'),
         ]);
 
-        return response()->json(['route_id' => $route->id], 201);
+        return new RouteResource($route);
     }
 
     public function show(string $id)
     {
         $route = Route::findOrFail($id);
         $this->authorize('view', $route);
-        return response()->json($route);
+        return new RouteResource($route);
     }
     public function update(Request $request, string $id)
     {
