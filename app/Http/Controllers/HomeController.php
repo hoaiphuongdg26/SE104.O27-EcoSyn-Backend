@@ -115,6 +115,8 @@ class HomeController extends Controller
             $home->update($validatedData);
             $address = Address::where('deleted', 0)->findOrFail($id);
             $address->update($validatedData);
+            $location = Location::where('deleted', 0)->findOrFail($id);
+            $location->update($validatedData);
 
             return new HomeResource($home);
         } catch (ModelNotFoundException $e) {
@@ -140,6 +142,11 @@ class HomeController extends Controller
             $address = Address::where('deleted', 0)->findOrFail($id);
             $address->deleted = 1;
             $address->save();
+
+            $location = Location::where('deleted', 0)->findOrFail($id);
+            $location->deleted =1;
+            $location->save();
+
             return response()->json(['message' => 'Home deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);

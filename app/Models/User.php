@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Traits\UsesUuid;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,8 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable;
-    use HasRoles;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, UsesUuid;
 
     // Bỏ qua cài đặt tăng tự động cho khóa chính
     protected $keyType = 'string';
@@ -51,12 +50,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    // Tạo UUID cho User (bảo đảm không null)
-    public static function booted()
-    {
-        parent::boot();
-        static::creating(function ($model) {
-            $model->id = Str::uuid();
-        });
+    public function vehicles(){
+        return $this->belongsToMany(Vehicle::class, 'staffs_vehicles', 'staff_id', 'vehicle_id');
     }
 }

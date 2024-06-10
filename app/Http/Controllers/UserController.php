@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Http\Resources\VehicleResource;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Vehicle;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -62,10 +64,10 @@ class UserController extends Controller
                 return response()->json(['message' => 'You do not have permission this action.'], Response::HTTP_FORBIDDEN);
             }
             $validatedData = $request->validate([
-                'name'     => 'sometimes|nullable|string|max:150',
-                'email'   => 'sometimes|nullable|string|lowercase|email|max:150|unique:'.User::class,
+                'name' => 'sometimes|nullable|string|max:150',
+                'email' => 'sometimes|nullable|string|lowercase|email|max:150|unique:' . User::class,
                 'password' => 'sometimes|nullable|string|max:150',
-                'role'     => 'sometimes|exists:roles,name'
+                'role' => 'sometimes|exists:roles,name'
             ]);
 
             $user->syncRoles([$request->input('role')]);
@@ -96,5 +98,14 @@ class UserController extends Controller
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
+    }
+
+    public function getVehiclesByUser($userId)
+    {
+        // Lấy user theo id
+        $user = User::findOrFail($userId);
+        // Lấy tất cả các vehicle thuộc về user này
+        $vehicles = $user->vehicles()->where('vehicles.deleted', 0)->get();
+        return response()->json(VehicleResource::collection($vehicles));
     }
 }

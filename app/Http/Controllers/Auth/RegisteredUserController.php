@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
@@ -33,8 +34,8 @@ class RegisteredUserController extends Controller
                 'email'     => $request->email,
                 'password'  => Hash::make($request->password),
             ]);
-            $role = Role::where(['name' => 'customer']);
-            $user->assignRole($role);
+            $role = Role::findByName('customer');
+            $user->assignRole($role)->firstOrFail();
             $user->save();
             event(new Registered($user));
 
@@ -44,7 +45,7 @@ class RegisteredUserController extends Controller
             return response()->json([
                 'success'   => true,
                 'message'   => 'success',
-                'user'      => User::with('roles')->find($user->id),
+                'user'      => new UserResource($user),
                 'token'     => $token->plainTextToken,
             ], 200);
         } catch (\Exception $e) {
