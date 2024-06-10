@@ -22,6 +22,7 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Home::class => \App\Policies\HomePolicy::class,
         \App\Models\Schedule::class => \App\Policies\SchedulePolicy::class,
         \App\Models\Route::class => \App\Policies\RoutePolicy::class,
+        \App\Models\Vehicle::class => \App\Policies\VehiclePolicy::class,
     ];
 
     /**

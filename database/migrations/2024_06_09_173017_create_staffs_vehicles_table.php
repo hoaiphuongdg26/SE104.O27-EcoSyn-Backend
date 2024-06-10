@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('homes', function (Blueprint $table) {
+        Schema::create('staffs_vehicles', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('customer_id')->references('id')->on('users')->nulable();
+            $table->foreignUuid('staff_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreignUuid('vehicle_id')->references('id')->on('vehicles')->onDelete('cascade');
+            $table->unique(['staff_id', 'vehicle_id']);
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('homes');
+        Schema::dropIfExists('staffs_vehicles');
     }
 };

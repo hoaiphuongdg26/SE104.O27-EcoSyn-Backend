@@ -17,4 +17,8 @@ class Home extends Model
     public function address(){
         return $this->hasOne(Address::class);
     }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'customer_id', 'id');
+    }
 }

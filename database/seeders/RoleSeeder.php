@@ -14,7 +14,7 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        $roles = ['customer ', 'staff', 'admin', 'super admin'];
+        $roles = ['customer', 'staff', 'admin', 'super admin'];
         $this->createRoles($roles);
 
         //Full permission for admin

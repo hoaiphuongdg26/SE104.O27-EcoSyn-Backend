@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('homes', function (Blueprint $table) {
+        Schema::create('vehicles', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('customer_id')->references('id')->on('users')->nulable();
+            $table->string('license_plate',150)->nullable();
+            $table->string('status',100)->nullable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('homes');
+        Schema::dropIfExists('vehicles');
     }
 };

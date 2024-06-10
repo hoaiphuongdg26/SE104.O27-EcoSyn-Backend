@@ -34,10 +34,8 @@ class HomeController extends Controller
      */
     public function store(Request $request)
     {
-        $home = Home::create([
-            'customer_id' => $request->user()->id,
-        ]);
         $validatedData = $request->validate([
+            'customer_id' => 'sometimes|nullable|exists:users,id',
             'unit_number' => 'sometimes|nullable|string|max:150',
             'street_number' => 'sometimes|nullable|string',
             'address_line' => 'sometimes|nullable|string|max:150',
@@ -48,6 +46,9 @@ class HomeController extends Controller
             'country_name' => 'sometimes|nullable|string|max:150',
             'longitude' => 'sometimes|nullable|numeric',
             'latitude' => 'sometimes|nullable|numeric',
+        ]);
+        $home = Home::create([
+            'customer_id' => data_get($validatedData, 'customer_id'),
         ]);
         // Tạo mới một Address với ID tương ứng của Home
         $address = new Address([
@@ -100,6 +101,7 @@ class HomeController extends Controller
             }
 
             $validatedData = $request->validate([
+                'customer_id' => 'sometimes|nullable|exists:users,id',
                 'unit_number' => 'sometimes|nullable|string|max:150',
                 'street_number' => 'sometimes|nullable|string',
                 'address_line' => 'sometimes|nullable|string|max:150',
@@ -115,6 +117,8 @@ class HomeController extends Controller
             $home->update($validatedData);
             $address = Address::where('deleted', 0)->findOrFail($id);
             $address->update($validatedData);
+            $location = Location::where('deleted', 0)->findOrFail($id);
+            $location->update($validatedData);
 
             return new HomeResource($home);
         } catch (ModelNotFoundException $e) {
@@ -140,6 +144,11 @@ class HomeController extends Controller
             $address = Address::where('deleted', 0)->findOrFail($id);
             $address->deleted = 1;
             $address->save();
+
+            $location = Location::where('deleted', 0)->findOrFail($id);
+            $location->deleted =1;
+            $location->save();
+
             return response()->json(['message' => 'Home deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
