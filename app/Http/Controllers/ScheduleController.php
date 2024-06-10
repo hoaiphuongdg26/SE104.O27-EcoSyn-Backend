@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Schedule;
-use App\Http\Resources\V1\PostResource;
+use App\Http\Resources\ScheduleResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
@@ -12,13 +12,12 @@ use Illuminate\Validation\ValidationException;
 
 class ScheduleController extends Controller
 {
-
     public function index()
     {
         $this->authorize('viewAny', Schedule::class);
 
         $schedules = Schedule::latest()->get();
-        return response()->json($schedules);
+        return ScheduleResource::collection($schedules);
     }
 
     public function store(Request $request)
@@ -38,19 +37,21 @@ class ScheduleController extends Controller
             'end_time'   => data_get($validatedData, 'end_time'),
         ]);
 
-        return response()->json($schedule, 201);
+        return new ScheduleResource($schedule);
     }
+
     public function show(string $id)
     {
         try {
             $schedule = Schedule::findOrFail($id);
             $this->authorize('view', $schedule);
 
-            return response()->json($schedule);
+            return new ScheduleResource($schedule);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
         }
     }
+
     public function update(Request $request, string $id)
     {
         try {
@@ -64,7 +65,7 @@ class ScheduleController extends Controller
             ]);
 
             $schedule->update($validatedData);
-            return response()->json($schedule);
+            return new ScheduleResource($schedule);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {

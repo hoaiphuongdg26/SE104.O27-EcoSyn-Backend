@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Route;
+use App\Http\Resources\RouteResource;
 
 class RouteController extends Controller
 {
@@ -12,7 +13,7 @@ class RouteController extends Controller
     {
         $this->authorize('viewAny', Route::class);
         $routes = Route::all();
-        return response()->json($routes);
+        return RouteResource::collection($routes);
     }
     public function store(Request $request)
     {
