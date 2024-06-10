@@ -33,9 +33,9 @@ class ScheduleController extends Controller
 
         $schedule = Schedule::create([
             'staff_id'   => $request->user()->id,
-            'route_id'   => $validatedData['route_id'],
-            'start_time' => $validatedData['start_time'],
-            'end_time'   => $validatedData['end_time'],
+            'route_id'   => data_get($validatedData, 'route_id'),
+            'start_time' => data_get($validatedData, 'start_time'),
+            'end_time'   => data_get($validatedData, 'end_time'),
         ]);
 
         return response()->json($schedule, 201);

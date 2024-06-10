@@ -25,9 +25,9 @@ class RouteController extends Controller
         ]);
 
         $route = Route::create([
-            'route_id' => $validatedData['route_id'],
-            'start_time' => $validatedData['start_time'],
-            'end_time' => $validatedData['end_time'],
+            'route_id' => data_get($validatedData, 'route_id'),
+            'start_time' => data_get($validatedData, 'start_time'),
+            'end_time' => data_get($validatedData, 'end_time'),
         ]);
 
         return response()->json(['route_id' => $route->id], 201);
