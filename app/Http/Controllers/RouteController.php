@@ -7,14 +7,20 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use App\Models\Route;
 use App\Http\Resources\RouteResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\Response;
 
 class RouteController extends Controller
 {
+    protected $model;
+
     public function index()
     {
-        $this->authorize('view', Route::class);
-        $routes = Route::all();
-        return RouteResource::collection($routes);
+        // $this->authorize('view', Route::class);
+        // $routes = Route::all();
+        // return RouteResource::collection($routes);
+        $this->model = Route::all();
+        return $this->model;
     }
     public function store(Request $request)
     {
@@ -25,20 +31,19 @@ class RouteController extends Controller
             'end_home' => 'required|uuid|exists:homes,id',
             'status_id' => 'required|uuid|exists:statuses,id',
         ]);
-
-        $validatedData['id'] = Str::uuid();
-
         $route = Route::create($validatedData);
-
         return new RouteResource($route);
     }
-
     public function show(Request $request)
     {
-        $id = $request->id;
-        $route = Route::findOrFail($id);
-        $this->authorize('view', $route);
-        return new RouteResource($route);
+        try {
+            $id = $request->route()->id;
+            $route = Route::findOrFail($id);
+            $this->authorize('view', $route);
+            return new RouteResource($route);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
     public function update(Request $request, string $id)
     {

@@ -45,6 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::apiResource('routes', RouteController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 });
-    Route::get('/routes', [RouteController::class, 'index']);
+    //Route::get('/routes', [RouteController::class, 'index']);
 
 

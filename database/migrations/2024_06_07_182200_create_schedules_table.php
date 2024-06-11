@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('schedules', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('staff_id')->references('id')->on('users');
-            $table->foreignUuid('route_id')->references('id')->on('routes');
+            $table->uuid('staff_id')->references('id')->on('users');
+            $table->uuid('route_id')->references('id')->on('routes');
             $table->dateTime('start_time');
             $table->dateTime('end_time');
             $table->timestamps();

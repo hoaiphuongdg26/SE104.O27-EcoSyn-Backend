@@ -6,24 +6,23 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Notifications\Notifiable;
-use App\Models\UsesUuid;
+use App\Traits\UsesUuid;
 
 // ...
 
 
 class Route extends Model
 {
-    use HasFactory, HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, HasApiTokens, HasFactory, Notifiable, UsesUuid;
 
     protected $keyType = 'string';  
     public $incrementing = false;   
-
+    
     protected $fillable = [
         'start_home',
         'end_home',
-        'status_id',
+        'status_id'
     ];
-    protected $primaryKey = 'id';
     public function startHome()
     {
         return $this->belongsTo(Home::class, 'start_home');

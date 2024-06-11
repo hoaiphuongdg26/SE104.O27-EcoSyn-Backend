@@ -25,7 +25,7 @@ class ScheduleController extends Controller
         $this->authorize('create', Schedule::class);
 
         $validatedData = $request->validate([
-            'route_id'    => 'required|exists:routes,id',
+            'route_id'    => 'required|uuid|exists:routes,id',
             'start_time'  => 'required|date',
             'end_time'    => 'required|date',
         ]);
