@@ -16,8 +16,15 @@ class ScheduleController extends Controller
     {
         $this->authorize('viewAny', Schedule::class);
 
+        $schedules = Schedule::all();
+        return $schedules;
+    }
+    public function getLatest()
+    {
+        $this->authorize('viewAny', Schedule::class);
+
         $schedules = Schedule::latest()->get();
-        return ScheduleResource::collection($schedules);
+        return $schedules;
     }
 
     public function store(Request $request)
@@ -76,10 +83,11 @@ class ScheduleController extends Controller
     public function destroy(string $id)
     {
         try {
-            $schedule = Schedule::findOrFail($id);
+            $schedule = Schedule::where('deleted', 0)->findOrFail($id);
             $this->authorize('delete', $schedule);
 
-            $schedule->delete();
+            $schedule->deleted = 1;
+            $schedule->save();
             return response()->json(['message' => 'Schedule deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);

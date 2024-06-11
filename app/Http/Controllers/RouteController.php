@@ -14,7 +14,7 @@ class RouteController extends Controller
 {
     public function index()
     {
-        // $this->authorize('view', Route::class);
+        $this->authorize('view', Route::class);
         // $routes = Route::all();
         // return RouteResource::collection($routes);
         $route = Route::all();
@@ -56,14 +56,26 @@ class RouteController extends Controller
 
         $route->update($validatedData);
 
-        return new RouteResource($route);
+        return $route;
     }
 
+    // public function destroy(string $id)
+    // {
+    //     $route = Route::findOrFail($id);
+    //     $this->authorize('delete', $route);
+    //     $route->delete();
+    //     return response()->json(null, 204);
+    // }
     public function destroy(string $id)
     {
-        $route = Route::findOrFail($id);
-        $this->authorize('delete', $route);
-        $route->delete();
-        return response()->json(null, 204);
+        try {
+            $route = Route::where('deleted', 0)->findOrFail($id);
+            $this->authorize('delete', $route);
+            $route->deleted = 1;
+            $route->save();
+            return response()->json(['message' => 'Post deleted'], Response::HTTP_ACCEPTED);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 }
