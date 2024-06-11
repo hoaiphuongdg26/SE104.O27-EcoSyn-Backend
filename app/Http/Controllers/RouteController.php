@@ -12,15 +12,13 @@ use Illuminate\Http\Response;
 
 class RouteController extends Controller
 {
-    protected $model;
-
     public function index()
     {
         // $this->authorize('view', Route::class);
         // $routes = Route::all();
         // return RouteResource::collection($routes);
-        $this->model = Route::all();
-        return $this->model;
+        $route = Route::all();
+        return $route;
     }
     public function store(Request $request)
     {
@@ -32,7 +30,7 @@ class RouteController extends Controller
             'status_id' => 'required|uuid|exists:statuses,id',
         ]);
         $route = Route::create($validatedData);
-        return new RouteResource($route);
+        return $route;
     }
     public function show(Request $request)
     {
