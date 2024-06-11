@@ -32,13 +32,13 @@ class RouteController extends Controller
         $route = Route::create($validatedData);
         return $route;
     }
-    public function show(Request $request)
+    public function show($id)
     {
         try {
-            $id = $request->route()->id;
+            //$id = $request->id;
             $route = Route::findOrFail($id);
             $this->authorize('view', $route);
-            return new RouteResource($route);
+            return $route;
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
