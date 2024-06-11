@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use App\Models\Route;
 use App\Http\Resources\RouteResource;
 
@@ -11,7 +12,7 @@ class RouteController extends Controller
 {
     public function index()
     {
-        $this->authorize('viewAny', Route::class);
+        $this->authorize('view', Route::class);
         $routes = Route::all();
         return RouteResource::collection($routes);
     }
@@ -20,18 +21,21 @@ class RouteController extends Controller
         $this->authorize('create', Route::class);
 
         $validatedData = $request->validate([
-            'start_home' => 'required|exists:homes,id',
-            'end_home' => 'required|exists:homes,id',
-            'status_id' => 'required|exists:statuses,id',
+            'start_home' => 'required|uuid|exists:homes,id',
+            'end_home' => 'required|uuid|exists:homes,id',
+            'status_id' => 'required|uuid|exists:statuses,id',
         ]);
+
+        $validatedData['id'] = Str::uuid();
 
         $route = Route::create($validatedData);
 
         return new RouteResource($route);
     }
 
-    public function show(string $id)
+    public function show(Request $request)
     {
+        $id = $request->id;
         $route = Route::findOrFail($id);
         $this->authorize('view', $route);
         return new RouteResource($route);
@@ -42,9 +46,9 @@ class RouteController extends Controller
         $this->authorize('update', $route);
 
         $validatedData = $request->validate([
-            'start_home' => 'sometimes|exists:homes,id',
-            'end_home' => 'sometimes|exists:homes,id',
-            'status_id' => 'sometimes|exists:statuses,id',
+            'start_home' => 'sometimes|uuid|exists:homes,id',
+            'end_home' => 'sometimes|uuid|exists:homes,id',
+            'status_id' => 'sometimes|uuid|exists:statuses,id',
         ]);
 
         $route->update($validatedData);

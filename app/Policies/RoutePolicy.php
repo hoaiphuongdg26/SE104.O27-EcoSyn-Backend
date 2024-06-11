@@ -13,8 +13,7 @@ class RoutePolicy
      */
     public function viewAny(User $user): bool
     {
-        // Admin và staff có quyền xem danh sách các Route
-        return $user->isAdmin() || $user->isStaff();
+        return $user->id === $user->staff_id;
     }
 
     /**
@@ -22,8 +21,7 @@ class RoutePolicy
      */
     public function view(User $user, Route $route): bool
     {
-        // Admin và staff có quyền xem chi tiết một Route
-        return $user->isAdmin() || $user->isStaff();
+        return $user->id === $route->staff_id;
     }
 
     /**

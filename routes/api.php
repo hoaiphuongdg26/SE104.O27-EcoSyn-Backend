@@ -42,10 +42,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/{userId}/get-vehicles', [UserController::class, 'getVehiclesByUser']);
     Route::get('/vehicles/{vehicleId}/get-users', [VehicleController::class, 'getUsersByVehicle']);
     Route::apiResource('iot-devices', IOT_DeviceController::class)->only(['index', 'show', 'update', 'destroy']);
+    Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::apiResource('routes', RouteController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
 });
+    Route::get('/routes', [RouteController::class, 'index']);
 
-Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'show', 'update', 'destroy'])
-    ->middleware('auth:sanctum');
-    
-Route::apiResource('routes', RouteController::class)->only(['index', 'store', 'show', 'update', 'destroy'])
-    ->middleware('auth:sanctum');
+
