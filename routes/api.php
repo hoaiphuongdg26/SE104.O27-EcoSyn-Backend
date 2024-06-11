@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VehicleController;
 use App\Http\Resources\UserResource;
@@ -34,7 +35,7 @@ Route::middleware(['auth:sanctum'])->get('/current_user', function (Request $req
 });
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::apiResource('v1/posts', PostController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::apiResource('posts', PostController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::apiResource('users', UserController::class)->only(['index', 'show', 'update', 'destroy']);
     Route::apiResource('homes', HomeController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::apiResource('vehicles', VehicleController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
@@ -45,9 +46,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('schedules', ScheduleController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::get('/schedules/get/latest', [ScheduleController::class, 'getLatest']);
     Route::apiResource('routes', RouteController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::apiResource('reports', ReportController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::delete('/reports/bulk-delete', [ReportController::class, 'bulkDelete']);
 });
     //Route::get('/routes', [RouteController::class, 'index']);
     //Route::delete('/routes/{id}', [RouteController::class, 'deleteAnItem']);
     
 
+
+
+    
 
