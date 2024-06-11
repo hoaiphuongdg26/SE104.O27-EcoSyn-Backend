@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('iot_devices', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('home_id')->references('id')->on('homes')->nullalble();
-            $table->string('ip');
-            $table->double('air_val');
-            $table->double('left_status');
-            $table->double('right_status');
-            $table->string('status');
+            $table->foreignUuid('home_id')->nullable()->constrained('homes');
+            $table->string('ip',50)->nullable();
+            $table->double('air_val')->nullable();
+            $table->double('left_status')->nullable();
+            $table->double('right_status')->nullable();
+            $table->string('status',100)->nullable();
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });

@@ -5,8 +5,6 @@ namespace App\Providers;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use App\Models\Schedule;
-use App\Policies\SchedulePolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -23,6 +21,8 @@ class AuthServiceProvider extends ServiceProvider
         \App\Models\Schedule::class => \App\Policies\SchedulePolicy::class,
         \App\Models\Route::class => \App\Policies\RoutePolicy::class,
         \App\Models\Vehicle::class => \App\Policies\VehiclePolicy::class,
+        \App\Models\Report::class => \App\Policies\ReportPolicy::class,
+        \App\Models\IOT_Device::class => \App\Policies\IOT_DevicePolicy::class,
     ];
 
     /**
