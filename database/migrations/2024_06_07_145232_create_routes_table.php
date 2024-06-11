@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str; // Add this line to import the Str class
 
 return new class extends Migration
 {
@@ -13,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->uuid('id')->primary();
-            $table->foreignUuid('start_home')->references('id')->on('homes');
-            $table->foreignUuid('end_home')->references('id')->on('homes');
-            $table->foreignUuid('status_id')->references('id')->on('statuses');
+            $table->uuid('start_home')->references('id')->on('homes');
+            $table->uuid('end_home')->references('id')->on('homes');
+            $table->uuid('status_id')->references('id')->on('statuses');
             $table->timestamps();
             $table->boolean('deleted')->default(0);
         });

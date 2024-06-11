@@ -16,9 +16,9 @@ class RouteResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'start_home' => new HomeResource($this->startHome),
-            'end_home' => new HomeResource($this->endHome),
-            'status' => $this->status_id,
+            'start_home' => new HomeResource($this->start_home),
+            'end_home' => new HomeResource($this->end_home),
+            'status_id' => $this->status_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

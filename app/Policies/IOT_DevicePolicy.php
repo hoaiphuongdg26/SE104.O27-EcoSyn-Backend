@@ -15,6 +15,14 @@ class IOT_DevicePolicy
     {
         return $user->id === $iOTDevice->user();
     }
+
+    /**
+     * Determine whether the user can create models.
+     */
+    public function create(User $user): bool
+    {
+        return !$user->hasRole('customer');
+    }
     public function update(User $user, IOT_Device $iOTDevice): bool
     {
         return !$user->hasRole('customer');
