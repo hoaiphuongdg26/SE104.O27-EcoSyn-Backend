@@ -29,5 +29,7 @@ class UserSeeder extends Seeder
         ]);
         $customerRole = Role::where('name', 'customer')->first() ?? Role::create(['name' => 'customer']);
         $user2->assignRole($customerRole);
+
+        \App\Models\User::factory(5)->create();
     }
 }
