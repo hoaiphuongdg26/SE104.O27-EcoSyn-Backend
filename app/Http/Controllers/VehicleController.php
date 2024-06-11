@@ -88,7 +88,7 @@ class VehicleController extends Controller
 
             return new VehicleResource($vehicle);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Vehicle not found'], Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -107,7 +107,7 @@ class VehicleController extends Controller
             Event::dispatch(new VehicleDeleting($vehicle));
             $vehicle->deleted = 1;
             $vehicle->save();
-            return response()->json(['message' => 'Post deleted'], Response::HTTP_ACCEPTED);
+            return response()->json(['message' => 'Vehicle deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
@@ -142,5 +142,30 @@ class VehicleController extends Controller
         $users = $vehicle->staffs()->get();
 
         return response()->json(UserResource::collection($users));
+    }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        if (empty($ids)) {
+            return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $vehicles = Vehicle::whereIn('id', $ids)->get();
+
+            foreach ($vehicles as $vehicle) {
+                $this->authorize('delete', $vehicle);
+
+                if (!$vehicle || $vehicle->deleted) {
+                    return response()->json(['message' => 'One or more vehicles do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
+                }
+            }
+            Vehicle::whereIn('id', $ids)->update(['deleted' => 1]);
+            return response()->json(['message' => 'Vehicles deleted successfully.'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
