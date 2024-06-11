@@ -111,4 +111,19 @@ class PostController extends Controller
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
+        }
+    
+        try {
+            Post::whereIn('id', $ids)->update(['deleted' => 1]);
+    
+            return response()->json(['message' => 'Posts deleted successfully.'], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }
