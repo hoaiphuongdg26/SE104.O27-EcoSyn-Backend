@@ -16,6 +16,7 @@ class IOT_DeviceResource extends JsonResource
     {
         return [
             'id' => $this->id,
+            'ip' => $this->ip,
             'air_val' => $this->air_val,
             'left_status' => $this->left_status,
             'right_status' => $this->right_status,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\UserFilter;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\VehicleResource;
 use App\Models\Role;
@@ -18,7 +19,7 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $current_user = Auth::user();
@@ -26,6 +27,10 @@ class UserController extends Controller
         $users = User::where('deleted', 0)->latest()->get()->filter(function ($user) use ($current_user) {
             return $current_user->can('view', $user);
         });
+        if ($request->hasAny(['filter'])) {
+            $filters = new UserFilter($request);
+            $users = User::filter($filters)->get();
+        }
         return response()->json(UserResource::collection($users));
     }
 

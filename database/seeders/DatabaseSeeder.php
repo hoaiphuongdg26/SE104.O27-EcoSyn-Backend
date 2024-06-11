@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             PostSeeder::class,
             VehicleSeeder::class,
+            IOT_DeviceSeeder::class,
             ReportSeeder::class,
         ]);
     }

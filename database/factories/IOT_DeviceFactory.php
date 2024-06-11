@@ -22,6 +22,8 @@ class IOT_DeviceFactory extends Factory
             'left_status' => $this->faker->optional()->randomFloat(2, 0, 100),
             'right_status' => $this->faker->optional()->randomFloat(2, 0, 100),
             'status' => $this->faker->optional()->sentence,
+            'created_at' => $this->faker->dateTime(),
+            'updated_at' => $this->faker->dateTimeThisYear(),
         ];
     }
 }

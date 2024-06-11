@@ -2,29 +2,26 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ScheduleFilter;
 use App\Models\Schedule;
 use App\Http\Resources\ScheduleResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
 class ScheduleController extends Controller
 {
-    public function index()
-    {
-        $this->authorize('viewAny', Schedule::class);
-
-        $schedules = Schedule::all();
-        return $schedules;
-    }
-    public function getLatest()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Schedule::class);
 
         $schedules = Schedule::latest()->get();
-        return $schedules;
+        if ($request->hasAny(['filter'])) {
+            $filters = new ScheduleFilter($request);
+            $schedules = Schedule::filter($filters)->get();
+        }
+        return ScheduleResource::collection($schedules);
     }
 
     public function store(Request $request)

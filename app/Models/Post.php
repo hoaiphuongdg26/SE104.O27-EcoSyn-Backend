@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use App\Traits\UsesUuid;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,7 +13,7 @@ use Spatie\Permission\Traits\HasRoles;
 
 class Post extends Model
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, UsesUuid;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles, UsesUuid, Filterable;
     // Bỏ qua cài đặt tăng tự động cho khóa chính
     protected $keyType = 'string';
     public $incrementing = false;

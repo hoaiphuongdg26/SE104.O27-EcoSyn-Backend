@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
@@ -13,7 +14,7 @@ use App\Traits\UsesUuid;
 
 class Route extends Model
 {
-    use HasFactory, HasApiTokens, HasFactory, Notifiable, UsesUuid;
+    use HasFactory, Filterable, HasApiTokens, HasFactory, Notifiable, UsesUuid;
 
     protected $keyType = 'string';  
     public $incrementing = false;   
