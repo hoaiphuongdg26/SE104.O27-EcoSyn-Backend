@@ -121,18 +121,15 @@ class PostController extends Controller
             return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
         }
         try {
-            $posts = Post::whereIn('id', $ids)->get();
-            // Kiểm tra quyền 
-            foreach ($posts as $post) {
-                $this->authorize('delete', $post);
-                // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó
-                if (!$post || $post->deleted) {
-                    return response()->json(['message' => 'One or more posts do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
-                }
+            $reports = Report::whereIn('id', $ids)->get();
+            // Kiểm tra quyền xóa cho từng báo cáo
+            foreach ($reports as $report) {
+                $this->authorize('delete', $report);
             }
-            Post::whereIn('id', $ids)->update(['deleted' => 1]);
+            // Cập nhật trạng thái xóa của các báo cáo đã chọn
+            Report::whereIn('id', $ids)->update(['deleted' => 1]);
 
-            return response()->json(['message' => 'Posts deleted successfully.'], Response::HTTP_OK);
+            return response()->json(['message' => 'Reports deleted successfully.'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {

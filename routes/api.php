@@ -54,13 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/homes/bulk-delete', [HomeController::class, 'bulkDelete']);
     Route::delete('/vehicles/bulk-delete', [VehicleController::class, 'bulkDelete']);
     Route::delete('/routes/bulk-delete', [RouteController::class, 'bulkDelete']);
-    Route::delete('/schedules/bulk-delete', [ScheduleController::class, 'bulkDelete']);    
+    Route::delete('/schedules/bulk-delete', [ScheduleController::class, 'bulkDelete']);
+
 });
-    //Route::get('/routes', [RouteController::class, 'index']);
-    //Route::delete('/routes/{id}', [RouteController::class, 'deleteAnItem']);
-    
-
-
-
-    
-

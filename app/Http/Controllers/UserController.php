@@ -99,6 +99,28 @@ class UserController extends Controller
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $users = User::whereIn('id', $ids)->get();
+            // Kiểm tra quyền xóa cho từng người dùng
+            foreach ($users as $user) {
+                $this->authorize('delete', $user);
+            }
+            // Cập nhật trạng thái xóa của các người dùng đã chọn
+            User::whereIn('id', $ids)->update(['deleted' => 1]);
+
+            return response()->json(['message' => 'Users deleted successfully.'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 
     public function getVehiclesByUser($userId)
     {
