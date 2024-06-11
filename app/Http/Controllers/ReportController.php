@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ReportFilter;
 use App\Http\Resources\ReportResource;
 use App\Models\Report;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -17,7 +18,7 @@ class ReportController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $user = Auth::user();
@@ -26,6 +27,10 @@ class ReportController extends Controller
         $reports = Report::where('deleted', 0)->latest()->get()->filter(function ($report) use ($user) {
             return $user->can('view', $report);
         });
+        if ($request->hasAny(['filter'])) {
+            $filters = new ReportFilter($request);
+            $reports = Report::filter($filters)->get();
+        }
         return response()->json(ReportResource::collection($reports));
     }
 

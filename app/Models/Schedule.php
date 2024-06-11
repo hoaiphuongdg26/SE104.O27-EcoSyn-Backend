@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Filterable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -9,7 +10,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Schedule extends Model
 {
-    use HasFactory, HasUuids;
+    use HasFactory, HasUuids, Filterable;
 
     protected $keyType = 'string';  // Chỉ định kiểu khóa chính là chuỗi
     public $incrementing = false;   // Không tự động tăng

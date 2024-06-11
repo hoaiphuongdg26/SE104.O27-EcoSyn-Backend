@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('password', 150);
             $table->string('phone_number',15)->nullable();
             $table->string('avatar_url',150)->nullable();
+            $table->string('status',150)->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->boolean('deleted')->default(0);

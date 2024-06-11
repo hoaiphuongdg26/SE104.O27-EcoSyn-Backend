@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\ScheduleFilter;
 use App\Models\Schedule;
 use App\Http\Resources\ScheduleResource;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -12,11 +13,15 @@ use Illuminate\Validation\ValidationException;
 
 class ScheduleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Schedule::class);
 
         $schedules = Schedule::latest()->get();
+        if ($request->hasAny(['filter'])) {
+            $filters = new ScheduleFilter($request);
+            $schedules = Schedule::filter($filters)->get();
+        }
         return ScheduleResource::collection($schedules);
     }
 

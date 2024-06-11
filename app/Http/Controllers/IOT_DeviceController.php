@@ -23,17 +23,13 @@ class IOT_DeviceController extends Controller
         $devices = IOT_Device::where('deleted', 0)->latest()->get()->filter(function ($device) use ($user) {
             return $user->can('view', $device);
         });
-
-        // Kiểm tra xem có tham số truy vấn được gửi hay không
-        if ($request->hasAny(['ip', 'status'])) {
+        if ($request->hasAny(['filter'])) {
             $filters = new IOT_DeviceFilter($request);
             $devices = IOT_Device::filter($filters)->get();
-            return response()->json($devices);
-        } else {
-            // Trả về danh sách các thiết bị mà người dùng có quyền xem
-            return response()->json(IOT_DeviceResource::collection($devices));
         }
+        return response()->json(IOT_DeviceResource::collection($devices));
     }
+
     /**
      * Store a newly created resource in storage.
      */
@@ -63,6 +59,7 @@ class IOT_DeviceController extends Controller
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
     }
+
     /**
      * Display the specified resource.
      */
@@ -109,6 +106,7 @@ class IOT_DeviceController extends Controller
             return response()->json(['message' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
     }
+
     /**
      * Remove the specified resource from storage.
      */

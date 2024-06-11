@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\PostFilter;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -16,7 +17,7 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $user = Auth::user();
@@ -25,6 +26,10 @@ class PostController extends Controller
         $posts = Post::where('deleted', 0)->latest()->get()->filter(function ($post) use ($user) {
             return $user->can('view', $post);
         });
+        if ($request->hasAny(['filter'])) {
+            $filters = new PostFilter($request);
+            $posts = Post::filter($filters)->get();
+        }
         return response()->json(PostResource::collection($posts));
     }
 

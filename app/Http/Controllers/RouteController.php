@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\RouteFilter;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Route;
@@ -9,10 +10,14 @@ use App\Http\Resources\RouteResource;
 
 class RouteController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $this->authorize('viewAny', Route::class);
         $routes = Route::all();
+        if ($request->hasAny(['filter'])) {
+            $filters = new RouteFilter($request);
+            $routes = Route::filter($filters)->get();
+        }
         return RouteResource::collection($routes);
     }
     public function store(Request $request)

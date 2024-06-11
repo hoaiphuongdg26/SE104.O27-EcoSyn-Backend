@@ -12,6 +12,6 @@ class IOT_DeviceSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\IOT_Device::factory(5)->create();
+        \App\Models\IOT_Device::factory(10)->create();
     }
 }

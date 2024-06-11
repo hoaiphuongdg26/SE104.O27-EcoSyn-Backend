@@ -24,15 +24,21 @@ class RegisteredUserController extends Controller
     {
         try {
             $request->validate([
-                'name'      => ['required', 'string', 'max:150'],
-                'email'     => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:' . User::class],
-                'password'  => ['required', 'confirmed', Rules\Password::defaults()],
+                'name' => ['required', 'string', 'max:150'],
+                'email' => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:' . User::class],
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'phone_number' => 'sometimes|string|max:15',
+                'avatar_url' => 'sometimes|string|max:150',
+                'status' => 'sometimes|string|max:150',
             ]);
 
             $user = User::create([
-                'name'      => $request->name,
-                'email'     => $request->email,
-                'password'  => Hash::make($request->password),
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'phone_number' => $request->phone_number,
+                'avatar_url' => $request->avatar_url,
+                'status' => $request->status,
             ]);
             $role = Role::findByName('customer');
             $user->assignRole($role)->firstOrFail();
@@ -43,16 +49,16 @@ class RegisteredUserController extends Controller
 
             $token = $user->createToken('api-token');
             return response()->json([
-                'success'   => true,
-                'message'   => 'success',
-                'user'      => new UserResource($user),
-                'token'     => $token->plainTextToken,
+                'success' => true,
+                'message' => 'success',
+                'user' => new UserResource($user),
+                'token' => $token->plainTextToken,
             ], 200);
         } catch (\Exception $e) {
             return response()->json([
-                'success'   => false,
-                'message'   => 'An error occurred while creating the user.',
-                'error'     => $e->getMessage() // Trả về thông điệp lỗi chi tiết
+                'success' => false,
+                'message' => 'An error occurred while creating the user.',
+                'error' => $e->getMessage() // Trả về thông điệp lỗi chi tiết
             ], 500);
         }
     }

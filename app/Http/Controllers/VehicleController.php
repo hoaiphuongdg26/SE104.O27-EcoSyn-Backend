@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\VehicleDeleting;
+use App\Filters\VehicleFilter;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\VehicleResource;
 use App\Models\User;
@@ -20,21 +21,18 @@ class VehicleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $user = Auth::user();
         $this->authorize('view', Vehicle::class);
-        $vehicles = Vehicle::where('deleted', 0)
-//            ->whereHas('staffs', function ($query) use ($user) {
-//                $query->where('id', $user->id);
-//            })
-            ->latest()
-            ->get();
-
+        $vehicles = Vehicle::where('deleted', 0)->latest()->get();
+        if ($request->hasAny(['filter'])) {
+            $filters = new VehicleFilter($request);
+            $vehicles = Vehicle::filter($filters)->get();
+        }
         return response()->json(VehicleResource::collection($vehicles));
     }
-
     /**
      * Store a newly created resource in storage.
      */

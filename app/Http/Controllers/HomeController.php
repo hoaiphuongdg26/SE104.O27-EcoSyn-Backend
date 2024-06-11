@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\AddressFilter;
+use App\Filters\HomeFilter;
+use App\Filters\LocationFilter;
 use App\Http\Resources\HomeResource;
 use App\Models\Address;
 use App\Models\Home;
@@ -17,7 +20,7 @@ class HomeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $user = Auth::user();
@@ -26,6 +29,16 @@ class HomeController extends Controller
         $homes = Home::where('deleted', 0)->latest()->get()->filter(function ($home) use ($user) {
             return $user->can('view', $home);
         });
+        if ($request->hasAny(['filter'])) {
+            $homefilters = new HomeFilter($request);
+            $homes = Home::filter($homefilters)->get();
+
+            $addressfilters = new AddressFilter($request);
+            $homes = Home::filter($addressfilters)->get();
+
+            $locationfilters = new LocationFilter($request);
+            $homes = Home::filter($locationfilters)->get();
+        }
         return response()->json(HomeResource::collection($homes));
     }
 

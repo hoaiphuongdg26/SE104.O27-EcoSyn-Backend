@@ -4,6 +4,7 @@ namespace App\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 
 class QueryFilter
@@ -91,8 +92,37 @@ class QueryFilter
                 continue;
             }
         }
-
+        foreach (['daily', 'monthly', 'yearly'] as $time) {
+            if (isset($this->filters[$time])) {
+                $this->applyTimeFilter($time, $this->filters[$time]);
+            }
+        }
+        if (isset($this->filters['start_date']) && isset($this->filters['end_date'])) {
+            $this->builder->whereBetween('updated_at', [Carbon::parse($this->filters['start_date']), Carbon::parse($this->filters['end_date'])]);
+        }
         return $this->builder;
+    }
+    /**
+     * Apply time filter based on the provided date or year.
+     *
+     * @param string $time
+     * @param string $value
+     * @return void
+     */
+    protected function applyTimeFilter($time, $value)
+    {
+        switch ($time) {
+            case 'daily':
+                $this->builder->whereDate('updated_at', Carbon::parse($value));
+                break;
+            case 'monthly':
+                $this->builder->whereYear('updated_at', Carbon::parse($value)->year)
+                    ->whereMonth('updated_at', Carbon::parse($value)->month);
+                break;
+            case 'yearly':
+                $this->builder->whereYear('updated_at', $value);
+                break;
+        }
     }
 }
 
