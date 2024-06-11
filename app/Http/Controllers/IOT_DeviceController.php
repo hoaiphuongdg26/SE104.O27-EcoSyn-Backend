@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\IOT_DeviceFilter;
 use App\Models\IOT_Device;
 use App\Models\Report;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -13,7 +14,7 @@ use Illuminate\Validation\ValidationException;
 
 class IOT_DeviceController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Lấy người dùng hiện tại
         $user = Auth::user();
@@ -22,7 +23,16 @@ class IOT_DeviceController extends Controller
         $devices = IOT_Device::where('deleted', 0)->latest()->get()->filter(function ($device) use ($user) {
             return $user->can('view', $device);
         });
-        return response()->json(IOT_DeviceResource::collection($devices));
+
+        // Kiểm tra xem có tham số truy vấn được gửi hay không
+        if ($request->hasAny(['ip', 'status'])) {
+            $filters = new IOT_DeviceFilter($request);
+            $devices = IOT_Device::filter($filters)->get();
+            return response()->json($devices);
+        } else {
+            // Trả về danh sách các thiết bị mà người dùng có quyền xem
+            return response()->json(IOT_DeviceResource::collection($devices));
+        }
     }
     /**
      * Store a newly created resource in storage.
@@ -33,11 +43,11 @@ class IOT_DeviceController extends Controller
             $this->authorize('create', IOT_Device::class);
             $validatedData = $request->validate([
                 'home_id' => 'sometimes|exist:homes,id',
-                'ip' => 'sometimes|string|50',
+                'ip' => 'sometimes|string|max:50',
                 'air_val' => 'sometimes|numeric',
                 'left_status' => 'sometimes|numeric',
                 'right_status' => 'sometimes|numeric',
-                'status' => 'sometimes|string|100',
+                'status' => 'sometimes|string|max:100',
             ]);
             $device = IOT_Device::create([
                 'home_id' => data_get($validatedData, 'home_id'),
