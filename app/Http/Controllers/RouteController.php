@@ -15,22 +15,20 @@ class RouteController extends Controller
     public function index()
     {
         $this->authorize('view', Route::class);
-        // $routes = Route::all();
-        // return RouteResource::collection($routes);
-        $route = Route::all();
-        return $route;
+        $routes = Route::where('deleted', 0)->get();
+        return response()->json(RouteResource::collection($routes));
     }
     public function store(Request $request)
     {
         $this->authorize('create', Route::class);
 
         $validatedData = $request->validate([
-            'start_home' => 'required|uuid|exists:homes,id',
-            'end_home' => 'required|uuid|exists:homes,id',
-            'status_id' => 'required|uuid|exists:statuses,id',
+            'start_home' => 'required|exists:homes,id',
+            'end_home' => 'required|exists:homes,id',
+            'status_id' => 'required|exists:statuses,id',
         ]);
         $route = Route::create($validatedData);
-        return $route;
+        return new RouteResource($route);
     }
     public function show($id)
     {
@@ -38,7 +36,7 @@ class RouteController extends Controller
             //$id = $request->id;
             $route = Route::findOrFail($id);
             $this->authorize('view', $route);
-            return $route;
+            return new RouteResource($route);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }
@@ -49,14 +47,14 @@ class RouteController extends Controller
         $this->authorize('update', $route);
 
         $validatedData = $request->validate([
-            'start_home' => 'sometimes|uuid|exists:homes,id',
-            'end_home' => 'sometimes|uuid|exists:homes,id',
-            'status_id' => 'sometimes|uuid|exists:statuses,id',
+            'start_home' => 'sometimes|exists:homes,id',
+            'end_home' => 'sometimes|exists:homes,id',
+            'status_id' => 'sometimes|exists:statuses,id',
         ]);
 
         $route->update($validatedData);
 
-        return $route;
+        return new RouteResource($route);
     }
 
     // public function destroy(string $id)

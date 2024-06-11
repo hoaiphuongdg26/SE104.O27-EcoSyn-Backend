@@ -15,16 +15,16 @@ class ScheduleController extends Controller
     public function index()
     {
         $this->authorize('viewAny', Schedule::class);
+        $schedule = Schedule::where('deleted', 0)->get();
+        return response()->json(ScheduleResource::collection($schedule));
 
-        $schedules = Schedule::all();
-        return $schedules;
     }
     public function getLatest()
     {
         $this->authorize('viewAny', Schedule::class);
 
-        $schedules = Schedule::latest()->get();
-        return $schedules;
+        $schedule = Schedule::latest()->get();
+        return response()->json(ScheduleResource::collection($schedule));;
     }
 
     public function store(Request $request)
