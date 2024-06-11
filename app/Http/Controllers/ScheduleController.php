@@ -93,4 +93,29 @@ class ScheduleController extends Controller
             return response()->json(['message' => 'Schedule not found.'], Response::HTTP_NOT_FOUND);
         }
     }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $schedules = Schedule::whereIn('id', $ids)->get();
+            // Kiểm tra quyền 
+            foreach ($schedules as $schedule) {
+                $this->authorize('delete', $schedule);
+                // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó
+                if (!$schedule || $schedule->deleted) {
+                    return response()->json(['message' => 'One or more records do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
+                }
+            }
+            Schedule::whereIn('id', $ids)->update(['deleted' => 1]);
+
+            return response()->json(['message' => 'Schedules deleted successfully.'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
 }

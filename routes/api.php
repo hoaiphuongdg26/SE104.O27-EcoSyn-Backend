@@ -47,13 +47,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/schedules/get/latest', [ScheduleController::class, 'getLatest']);
     Route::apiResource('routes', RouteController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::apiResource('reports', ReportController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
-    Route::delete('/reports/bulk-delete', [ReportController::class, 'bulkDelete']);
     
-    Route::delete('/posts/bulk-delete', [PostController::class, 'bulkDelete']);
-    Route::delete('/users/bulk-delete', [UserController::class, 'bulkDelete']);
-    Route::delete('/homes/bulk-delete', [HomeController::class, 'bulkDelete']);
-    Route::delete('/vehicles/bulk-delete', [VehicleController::class, 'bulkDelete']);
-    Route::delete('/routes/bulk-delete', [RouteController::class, 'bulkDelete']);
-    Route::delete('/schedules/bulk-delete', [ScheduleController::class, 'bulkDelete']);
+    Route::delete('/reports/delete/bulk-delete', [ReportController::class, 'bulkDelete']);
+    Route::delete('/posts/delete/bulk-delete', [PostController::class, 'bulkDelete']);
+    Route::delete('/users/delete/bulk-delete', [UserController::class, 'bulkDelete']);
+    Route::delete('/homes/delete/bulk-delete', [HomeController::class, 'bulkDelete']);
+    Route::delete('/vehicles/delete/bulk-delete', [VehicleController::class, 'bulkDelete']);
+    Route::delete('/routes/delete/bulk-delete', [RouteController::class, 'bulkDelete']);
+    Route::delete('/schedules/delete/bulk-delete', [ScheduleController::class, 'bulkDelete']);
 
 });

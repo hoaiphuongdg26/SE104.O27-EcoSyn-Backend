@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('reports', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->enum('type', ['user', 'device']);
-            $table->foreignUuid('user_id')  ;
+            $table->foreignUuid('user_id')->nullable()->constrained('users');
             $table->foreignUuid('device_id')->nullable()->constrained('iot_devices');
             $table->text('description')->nullable();
             $table->integer('vote')->nullable();

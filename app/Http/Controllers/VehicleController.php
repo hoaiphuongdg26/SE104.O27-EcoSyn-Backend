@@ -90,7 +90,7 @@ class VehicleController extends Controller
 
             return new VehicleResource($vehicle);
         } catch (ModelNotFoundException $e) {
-            return response()->json(['message' => 'Post not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Vehicle not found'], Response::HTTP_NOT_FOUND);
         } catch (ValidationException $e) {
             return response()->json(['message' => $e->errors()], Response::HTTP_UNPROCESSABLE_ENTITY);
         }
@@ -109,7 +109,7 @@ class VehicleController extends Controller
             Event::dispatch(new VehicleDeleting($vehicle));
             $vehicle->deleted = 1;
             $vehicle->save();
-            return response()->json(['message' => 'Post deleted'], Response::HTTP_ACCEPTED);
+            return response()->json(['message' => 'Vehicle deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         }

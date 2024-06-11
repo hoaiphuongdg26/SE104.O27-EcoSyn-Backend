@@ -73,9 +73,34 @@ class RouteController extends Controller
             $this->authorize('delete', $route);
             $route->deleted = 1;
             $route->save();
-            return response()->json(['message' => 'Post deleted'], Response::HTTP_ACCEPTED);
+            return response()->json(['message' => 'Route deleted'], Response::HTTP_ACCEPTED);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
+    }
+    public function bulkDelete(Request $request)
+    {
+        $ids = $request->input('ids', []);
+        if (empty($ids)) {
+            return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
+        }
+        try {
+            $routes = Route::whereIn('id', $ids)->get();
+            // Kiểm tra quyền 
+            foreach ($routes as $route) {
+                $this->authorize('delete', $route);
+                // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó
+                if (!$route || $route->deleted) {
+                    return response()->json(['message' => 'One or more routes do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
+                }
+            }
+            Route::whereIn('id', $ids)->update(['deleted' => 1]);
+
+            return response()->json(['message' => 'Routes deleted successfully.'], Response::HTTP_OK);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -129,16 +129,16 @@ class ReportController extends Controller
         try {
             $report = Report::whereIn('id', $ids)->get();
             // Kiểm tra quyền
-            foreach ($report as $post) {
+            foreach ($report as $report) {
                 $this->authorize('delete', $report);
                 // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó
                 if (!$report || $report->deleted) {
-                    return response()->json(['message' => 'One or more posts do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
+                    return response()->json(['message' => 'One or more reports do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
                 }
             }
             Report::whereIn('id', $ids)->update(['deleted' => 1]);
 
-            return response()->json(['message' => 'Posts deleted successfully.'], Response::HTTP_OK);
+            return response()->json(['message' => 'Reports deleted successfully.'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {
