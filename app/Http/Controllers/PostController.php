@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use App\Http\Resources\V1\PostResource;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -32,22 +33,24 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        $staff_id = $request->user()->id;
-        \Illuminate\Support\Facades\Log::info('User ID: ' . $staff_id);
-        $validatedData = $request->validate([
-            'title'     => 'sometimes|string|max:150',
-            'content'   => 'sometimes|string',
-            'image_url' => 'sometimes|nullable|string|max:150'
-        ]);
+        try {
+            $staff_id = $request->user()->id;
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:150',
+                'content' => 'required|string',
+                'image_url' => 'sometimes|nullable|string|max:150'
+            ]);
+            $post = Post::create([
+                'staff_id' => $staff_id,
+                'title' => data_get($validatedData, 'title'),
+                'content' => data_get($validatedData, 'content'),
+                'image_url' => data_get($validatedData, 'image_url'),
+            ]);
 
-        $post = Post::create([
-            'staff_id'  => $staff_id,
-            'title'     => data_get($validatedData, 'title'),
-            'content'   => data_get($validatedData, 'content'),
-            'image_url' => data_get($validatedData, 'image_url'),
-        ]);
-
-        return new PostResource($post);
+            return new PostResource($post);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
+        }
     }
 
     /**
@@ -79,8 +82,8 @@ class PostController extends Controller
             }
 
             $validatedData = $request->validate([
-                'title'     => 'sometimes|string|max:150',
-                'content'   => 'sometimes|string',
+                'title' => 'sometimes|string|max:150',
+                'content' => 'sometimes|string',
                 'image_url' => 'sometimes|nullable|string|max:150'
             ]);
 
@@ -118,18 +121,15 @@ class PostController extends Controller
             return response()->json(['message' => 'No ids provided.'], Response::HTTP_BAD_REQUEST);
         }
         try {
-            $posts = Post::whereIn('id', $ids)->get();
-            // Kiểm tra quyền 
-            foreach ($posts as $post) {
-                $this->authorize('delete', $post);
-                // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó
-                if (!$post || $post->deleted) {
-                    return response()->json(['message' => 'One or more posts do not exist or have already been deleted.'], Response::HTTP_NOT_FOUND);
-                }
+            $reports = Report::whereIn('id', $ids)->get();
+            // Kiểm tra quyền xóa cho từng báo cáo
+            foreach ($reports as $report) {
+                $this->authorize('delete', $report);
             }
-            Post::whereIn('id', $ids)->update(['deleted' => 1]);
+            // Cập nhật trạng thái xóa của các báo cáo đã chọn
+            Report::whereIn('id', $ids)->update(['deleted' => 1]);
 
-            return response()->json(['message' => 'Posts deleted successfully.'], Response::HTTP_OK);
+            return response()->json(['message' => 'Reports deleted successfully.'], Response::HTTP_OK);
         } catch (ModelNotFoundException $e) {
             return response()->json(['message' => $e->getMessage()], Response::HTTP_NOT_FOUND);
         } catch (\Exception $e) {

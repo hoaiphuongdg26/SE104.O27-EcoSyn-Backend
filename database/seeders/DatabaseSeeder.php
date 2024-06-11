@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Http\Controllers\ReportController;
 use App\Models\Post;
 use Illuminate\Database\Seeder;
 
@@ -19,6 +20,7 @@ class DatabaseSeeder extends Seeder
             PermissionSeeder::class,
             PostSeeder::class,
             VehicleSeeder::class,
+            ReportSeeder::class,
         ]);
     }
 }
