@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
                 'phone_number' => 'sometimes|string|max:15',
                 'avatar_url' => 'sometimes|string|max:150',
-                'status' => 'sometimes|string|max:150',
+                'status' => 'sometimes|boolean',
             ]);
 
             $user = User::create([

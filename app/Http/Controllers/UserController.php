@@ -13,6 +13,8 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\Rules;
+
 
 class UserController extends Controller
 {
@@ -71,8 +73,11 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'sometimes|nullable|string|max:150',
                 'email' => 'sometimes|nullable|string|lowercase|email|max:150|unique:' . User::class,
-                'password' => 'sometimes|nullable|string|max:150',
-                'role' => 'sometimes|exists:roles,name'
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'role' => 'sometimes|exists:roles,name',
+                'phone_number' => 'sometimes|string|max:15',
+                'avatar_url' => 'sometimes|string|max:150',
+                'status' => 'sometimes|boolean',
             ]);
 
             $user->syncRoles([$request->input('role')]);
