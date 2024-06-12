@@ -73,7 +73,7 @@ class UserController extends Controller
             $validatedData = $request->validate([
                 'name' => 'sometimes|nullable|string|max:150',
                 'email' => 'sometimes|nullable|string|lowercase|email|max:150|unique:' . User::class,
-                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'password' => ['sometimes', 'confirmed', Rules\Password::defaults()],
                 'role' => 'sometimes|exists:roles,name',
                 'phone_number' => 'sometimes|string|max:15',
                 'avatar_url' => 'sometimes|string|max:150',
