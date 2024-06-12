@@ -98,7 +98,7 @@ class ScheduleController extends Controller
         }
         try {
             $schedules = Schedule::whereIn('id', $ids)->get();
-            // Kiểm tra quyền 
+            // Kiểm tra quyền
             foreach ($schedules as $schedule) {
                 $this->authorize('delete', $schedule);
                 // Kiểm tra bài viết tồn tại và chưa bị xóa trước đó

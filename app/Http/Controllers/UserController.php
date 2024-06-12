@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rules;
 
@@ -41,7 +42,26 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->authorize('create', User::class);
+
+        $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:150', 'unique:' . User::class],
+            'phone_number' => 'sometimes|string|max:15',
+            'avatar_url' => 'sometimes|string|max:150',
+            'status' => 'sometimes|boolean',
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make('@12345678'),
+            'phone_number' => $request->phone_number,
+            'avatar_url' => $request->avatar_url,
+            'status' => $request->status,
+        ]);
+
+        return new UserResource($user);
     }
 
     /**
