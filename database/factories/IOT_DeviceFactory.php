@@ -21,7 +21,7 @@ class IOT_DeviceFactory extends Factory
             'air_val' => $this->faker->optional()->randomFloat(2, 0, 100),
             'left_status' => $this->faker->optional()->randomFloat(2, 0, 100),
             'right_status' => $this->faker->optional()->randomFloat(2, 0, 100),
-            'status' => $this->faker->optional()->sentence,
+            'status' => $this->faker->randomElement(['connected', 'disconnected']),
             'created_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTimeThisYear(),
         ];
